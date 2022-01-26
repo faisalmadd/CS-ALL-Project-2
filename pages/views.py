@@ -15,5 +15,5 @@ def login_view(request, *args, **kwargs):
     return render(request, "login.html", {})
 
 
-def contact_view(*args, **kwargs):
-    return HttpResponse("<h1>Contact Page</h1>")
+def contact_view(request, *args, **kwargs):
+    return render(request, "contact.html", {})
