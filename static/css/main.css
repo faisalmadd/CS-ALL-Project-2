@@ -371,9 +371,9 @@ color: #999;
 }
 #signup-button{
   position: relative;
-  border-radius: 20px;
+  border-radius: 50px;
   display: inline-block;
-  padding: 10px 25px;
+  padding: 7px 25px;
   text-transform: uppercase;
   text-decoration: none;
   font-size: 13px;
@@ -386,7 +386,7 @@ color: #999;
   color: #021f3b;
   font-size: 15px;
   border-radius: 6px;
-  background-color: #ffcab1;
+  background-color: #BC544B;
   box-shadow: 0 0 10px #ff8248, 0 0 4px #ff8248,0 0 80px #ff8248;
   transition-delay: 0.1s;
   text-decoration: none;
