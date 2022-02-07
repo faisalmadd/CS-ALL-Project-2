@@ -31,3 +31,7 @@ def login_view(request, *args, **kwargs):
 
 def contact_view(request, *args, **kwargs):
     return render(request, "contact.html", {})
+
+
+def profile_view(request, *args, **kwargs):
+    return render(request, "profile.html", {})

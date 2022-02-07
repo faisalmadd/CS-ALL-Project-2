@@ -15,13 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from pages.views import homepage_view, contact_view, register_view, login_view
+from pages.views import homepage_view, contact_view, register_view, profile_view
+from django.contrib.auth import views as auth_view
 
 urlpatterns = [
     path('', homepage_view, name='home'),  # 1st arg '' means Home Page
-    path('contact/', contact_view),
+    path('contact/', contact_view, name='contact'),
     path('register/', register_view, name='register'),
-    path('login/', login_view, name='login'),
+    path('login/', auth_view.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    path('profile/', profile_view, name='profile'),
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
+
 ]
