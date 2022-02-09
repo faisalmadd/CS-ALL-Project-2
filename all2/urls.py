@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from pages.views import homepage_view, contact_view, register_view, profile_view
+from pages.views import homepage_view, contact_view, register_view, profile_view, dashboard_view
 from django.contrib.auth import views as auth_view
 
 urlpatterns = [
@@ -25,6 +25,7 @@ urlpatterns = [
     path('login/', auth_view.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('profile/', profile_view, name='profile'),
+    path('dashboard/', dashboard_view, name='dashboard'),
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
 

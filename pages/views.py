@@ -35,3 +35,7 @@ def contact_view(request, *args, **kwargs):
 
 def profile_view(request, *args, **kwargs):
     return render(request, "profile.html", {})
+
+
+def dashboard_view(request, *args, **kwargs):
+    return render(request, "dashboard/dashboard.html", {})
