@@ -15,18 +15,30 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from pages.views import homepage_view, contact_view, register_view, profile_view, dashboard_view
+from pages.views import homepage_view, contact_view, StudentRegisterView, profile_view, admin_dashboard, \
+    student_dashboard, lecturer_dashboard, login_view, login_form, admin_add_student, LecturerRegisterView
 from django.contrib.auth import views as auth_view
 
 urlpatterns = [
     path('', homepage_view, name='home'),  # 1st arg '' means Home Page
     path('contact/', contact_view, name='contact'),
-    path('register/', register_view, name='register'),
-    path('login/', auth_view.LoginView.as_view(template_name='login.html'), name='login'),
+    path('register/', StudentRegisterView.as_view(), name='register'),
+    path('login/', login_view, name='login'),
+    path('login_form/', login_form, name='login_form'),
     path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('profile/', profile_view, name='profile'),
-    path('dashboard/', dashboard_view, name='dashboard'),
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
+
+    # admin pages
+    path('admin_dashboard/', admin_dashboard, name='admin_dashboard'),
+    path('admin_add_lecturer/', LecturerRegisterView.as_view(), name='admin_add_lecturer'),
+    path('admin_add_student/', admin_add_student, name='admin_add_student'),
+
+    # lecturer pages
+    path('lecturer/dashboard/', lecturer_dashboard, name='lecturer_dashboard'),
+
+    # student pages
+    path('student/dashboard/', student_dashboard, name='student_dashboard'),
 
 ]

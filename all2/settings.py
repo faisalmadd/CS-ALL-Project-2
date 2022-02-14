@@ -16,6 +16,9 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -40,9 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # own
-    'pages.apps.PagesConfig',
+    'pages',
     'crispy_forms',
     'captcha',
+    'widget_tweaks',
+    'bootstrap_modal_forms',
+    'bootstrap3',
+    'django_forms_bootstrap',
+
 ]
 
 MIDDLEWARE = [
@@ -110,7 +118,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-DATETIME_FORMAT = 'Y-M-D'
+DATETIME_FORMAT = 'D-M-Y'
 
 USE_I18N = True
 
@@ -123,15 +131,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# AUTH_USER_MODEL = 'elearn.User'
+AUTH_USER_MODEL = 'pages.User'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# MEDIA_URL = 'media/'
+MEDIA_URL = 'media/'
 
 # LOGIN_URL = 'login_form'
 

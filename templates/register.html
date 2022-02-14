@@ -13,12 +13,12 @@
       <fieldset class="form-group">
           <legend class="border-bottom mb-4" style="color: white;">Register now to join the community!</legend>
           {{ form|crispy }}
-      </fieldset>
+      </fieldset><br>
       <div class="form-group" id="signup-button">
           <button class="btn" style="color: white;">Register Now!</button>
       </div>
       <div class="form-group">
-          <small class="text-muted ml-2" >Already have an account? <a href="{% url 'login' %}">Sign In</a></small>
+          <small class="text-muted ml-2">Already have an account? <a href="{% url 'login_form' %}">Sign In</a></small>
       </div>
     </form>
     </div>
