@@ -62,7 +62,59 @@
                 <span class="las la-search"></span>
                 <input type="search" placeholder="Search here!" />
             </div>
+
+            <div class="user-wrapper">
+                <img src="{% static 'images/user.png' %}" width="40px" height="40px" alt="">
+                <div>
+                    <h4>{{user.username}}</h4>
+                    <small>Logged In</small>
+                </div>
+            </div>
         </header>
+
+        <main>
+            <div class="cards">
+                <div class="card-single">
+                    <div>
+                        <h1>{{ course }}</h1>
+                        <span>Courses</span>
+                    </div>
+                    <div>
+                        <span class="las la-clipboard-list"></span>
+                    </div>
+                </div>
+
+                <div class="card-single">
+                    <div>
+                        <h1>{{ student }}</h1>
+                        <span>Students</span>
+                    </div>
+                    <div>
+                        <span class="las la-graduation-cap"></span>
+                    </div>
+                </div>
+
+                <div class="card-single">
+                    <div>
+                        <h1>{{ lecturer }}</h1>
+                        <span>Lecturers</span>
+                    </div>
+                    <div>
+                        <span class="las la-lightbulb"></span>
+                    </div>
+                </div>
+
+                <div class="card-single">
+                    <div>
+                        <h1>{{ users }}</h1>
+                        <span>All Users</span>
+                    </div>
+                    <div>
+                        <span class="las la-users"></span>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 </body>
 </html>

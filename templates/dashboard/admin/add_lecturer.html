@@ -37,6 +37,10 @@
                     <span>Add Course</span></a>
                 </li>
                 <li>
+                    <a href="{% url 'manage_users' %}"><span class="las la-users"></span>
+                    <span>Manage Users</span></a>
+                </li>
+                <li>
                     <a href=""><span class="las la-fingerprint"></span>
                     <span>Profile</span></a>
                 </li>
@@ -74,15 +78,15 @@
         <main>
                 <!--Css Style -->
                 <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
-                <div class="container" style="margin-top: 50px; width: 100%;">
+                <div class="container" style="margin-top: 10px;">
                 <form action="" method="POST">
                   {% csrf_token %}
-                  <fieldset class="form-group" style="width: 100%;">
+                  <fieldset class="form-group">
                       <legend class="border-bottom mb-4" style="color: var(--main-color);">Add a Lecturer</legend>
                       {{ form|crispy }}<br>
-                  </fieldset><br>
+                  </fieldset>
                   <div class="form-group" id="signup-button">
-                      <button class="btn" style="color: var(--main-color);">Add Lecturer</button>
+                      <button class="btn">Add Lecturer</button>
                   </div>
                 </form>
                 </div>

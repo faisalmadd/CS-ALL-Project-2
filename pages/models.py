@@ -39,7 +39,6 @@ class Announcement(models.Model):
 
 class Course(models.Model):
     name = models.CharField(max_length=30)
-    color = models.CharField(max_length=7, default='#007bff')
 
     def __str__(self):
         return self.name
@@ -131,6 +130,6 @@ class TakenQuiz(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 
-class LearnerAnswer(models.Model):
+class StudentAnswer(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='quiz_answers')
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='+')

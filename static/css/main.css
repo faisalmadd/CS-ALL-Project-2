@@ -340,7 +340,7 @@ text-transform: uppercase;
 color: #ccc;
 }
 .form-control {
-background-color: transparent;
+background-color: white;
 border-top: 0;
 border-right: 0;
 border-left: 0;

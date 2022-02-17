@@ -10,13 +10,11 @@
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
       <fieldset class="form-group">
-          {% csrf_token %}
           <legend class="border-bottom mb-4" style="color: white;">Log In Now!</legend>
           <label>Username</label><br>
-          <input type="text" style="width: 100%;" name="username" required="Fill Username"><br>
+          <input type="text" style="width: 100%; height: 2.5rem;" name="username" required="Fill Username"><br>
           <label>Password</label><br>
-          <input type="password" style="width: 100%;" name="password" required="Fill Password"><br>
-          {{ form|crispy }}
+          <input type="password" style="width: 100%; height: 2.5rem;" name="password" required="Fill Password"><br>
       </fieldset><br>
       <div class="form-group" id="signup-button">
           <button class="btn" style="color: white;">Sign In</button>

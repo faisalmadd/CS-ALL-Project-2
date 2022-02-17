@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from pages.views import homepage_view, contact_view, StudentRegisterView, profile_view, admin_dashboard, \
-    student_dashboard, lecturer_dashboard, login_view, login_form, admin_add_student, LecturerRegisterView
+    student_dashboard, lecturer_dashboard, login_view, login_form, LecturerRegisterView, \
+    AdminStudentRegisterView, ManageUserView, DeleteUser, add_course, AddQuizView, UpdateQuizView, add_question, \
+    update_question, QuizListView
 from django.contrib.auth import views as auth_view
 
 urlpatterns = [
@@ -33,10 +35,18 @@ urlpatterns = [
     # admin pages
     path('admin_dashboard/', admin_dashboard, name='admin_dashboard'),
     path('admin_add_lecturer/', LecturerRegisterView.as_view(), name='admin_add_lecturer'),
-    path('admin_add_student/', admin_add_student, name='admin_add_student'),
+    path('admin_add_student/', AdminStudentRegisterView.as_view(), name='admin_add_student'),
+    path('manage_users/', ManageUserView.as_view(), name='manage_users'),
+    path('delete_user/<int:pk>', DeleteUser.as_view(), name='delete_user'),
 
     # lecturer pages
-    path('lecturer/dashboard/', lecturer_dashboard, name='lecturer_dashboard'),
+    path('lecturer_dashboard/', lecturer_dashboard, name='lecturer_dashboard'),
+    path('add_course/', add_course, name='add_course'),
+    path('add_quiz/', AddQuizView.as_view(), name='add_quiz'),
+    path('list_quiz/', QuizListView.as_view(), name='list_quiz'),
+    path('update_quiz/<int:pk>', UpdateQuizView.as_view(), name='update_quiz'),
+    path('add_question/', add_question, name='add_question'),
+    path('quiz/<int:quiz_pk>/<int:question_pk>', update_question, name='update_question'),
 
     # student pages
     path('student/dashboard/', student_dashboard, name='student_dashboard'),
