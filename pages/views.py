@@ -8,7 +8,7 @@ from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, ListView, DeleteView
+from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from .models import TakenQuiz, Profile, Quiz, Question, Answer, Student, User, Course, Tutorial, Notes, Announcement
 from .forms import StudentRegistrationForm, LecturerRegistrationForm, AdminStudentRegistrationForm, QuestionForm, \
     BaseAnswerInlineFormSet
@@ -154,7 +154,7 @@ class AddQuizView(CreateView):
         return redirect('update_quiz', quiz.pk)
 
 
-class UpdateQuizView(CreateView):
+class UpdateQuizView(UpdateView):
     model = Quiz
     fields = ('name', 'course')
     template_name = 'dashboard/lecturer/update_quiz.html'
@@ -180,9 +180,9 @@ def add_question(request, pk):
             question.quiz = quiz
             question.save()
             messages.success(request, 'Please add answers to the questions')
-            return redirect('question_change', quiz.pk, question.pk)
-        else:
-            form = QuestionForm()
+            return redirect('update_questions', quiz.pk, question.pk)
+    else:
+        form = QuestionForm()
 
         return render(request, 'dashboard/lecturer/add_question.html', {'quiz': quiz, 'form': form})
 
@@ -210,7 +210,7 @@ def update_question(request, quiz_pk, question_pk):
                 formset.save()
                 formset.save()
             messages.success(request, 'Question And Answers Saved Successfully')
-            return redirect('quiz_change', quiz.pk)
+            return redirect('update_quiz', quiz.pk)
     else:
         form = QuestionForm(instance=question)
         formset = AnswerFormatSet(instance=question)

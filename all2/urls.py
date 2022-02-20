@@ -45,8 +45,8 @@ urlpatterns = [
     path('add_quiz/', AddQuizView.as_view(), name='add_quiz'),
     path('list_quiz/', QuizListView.as_view(), name='list_quiz'),
     path('update_quiz/<int:pk>', UpdateQuizView.as_view(), name='update_quiz'),
-    path('add_question/', add_question, name='add_question'),
-    path('quiz/<int:quiz_pk>/<int:question_pk>', update_question, name='update_question'),
+    path('add_question/<int:pk>', add_question, name='add_question'),
+    path('quiz/<int:quiz_pk>/<int:question_pk>', update_question, name='update_questions'),
 
     # student pages
     path('student/dashboard/', student_dashboard, name='student_dashboard'),
