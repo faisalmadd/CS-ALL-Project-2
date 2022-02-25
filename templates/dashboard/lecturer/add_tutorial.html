@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     {% load static %}
-    {% load crispy_forms_tags %}
 
     <meta charset="UTF-8">
-    <title>Add Questions | INTI Online Tutor System</title>
+    <title>Add Tutorial | INTI Online Tutor System</title>
     <!--Line-Awesome Style-->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css">
@@ -27,18 +26,18 @@
                 </li>
                 <li>
                     <a href="{% url 'add_course' %}"><span class="las la-microchip"></span>
-                    <span>Add Topic</span></a>
+                    <span>Add Course</span></a>
                 </li>
                 <li>
-                    <a href=""><span class="las la-book"></span>
-                    <span>Lessons</span></a>
+                    <a href="" class="active"><span class="las la-book"></span>
+                    <span>Tutorials</span></a>
                 </li>
                 <li>
                     <a href=""><span class="las la-comments"></span>
                     <span>Discussion</span></a>
                 </li>
                 <li>
-                    <a href="{% url 'list_quiz' %}" class="active"><span class="las la-certificate"></span>
+                    <a href="{% url 'list_quiz' %}"><span class="las la-certificate"></span>
                     <span>Quizzes</span></a>
                 </li>
                 <li>
@@ -79,44 +78,88 @@
         </header>
 
         <main>
-            <div class="container-fluid">
-            <!-- Breadcrumbs-->
+                   <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 mb-3">
+          <div class="col-12 mb-3">
+
+
+                <div id="content-wrapper" style="padding-top: 30px">
+        <div class="container-fluid">
             <ol class="breadcrumb">
+
                 <li class="breadcrumb-item">
-                    <legend href="#" style="color: var(--main-color); font-size: 1.3rem;">Add a Question</legend>
+                    <a href="{% url 'list_tutorial' %}">List Tutorial</a>
                 </li>
+
             </ol>
             <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-table text-primary"></i>
+                    Please Do Not Forget To Attach Tutorial Thumbnail
+                </div>
                 <div class="card-body">
-                   {% for message in messages %}
+                    {% for message in messages %}
                         <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
                             {{ message }}
                         </div>
                     {% endfor %}
+              <form method="post" action="{% url 'post_tutorial' %}" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="form-label-group">
+                    <select class="w3-select w3-border" name="course_id" required="">
+                  }
 
-             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="">My Quizzes</a></li>
-                  <li class="breadcrumb-item"><a href="">{{ quiz.name }}</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Add a new question</li>
-                </ol>
-              </nav>
-              <h2 class="mb-3">Add a new question</h2>
-              <p class="lead">Add first the text of the question. In the next step you will be able to add the possible answers.</p>
-              <form method="POST" novalidate>
-                {% csrf_token %}
-                {{ form|crispy }}
-                <br><button type="submit" class="btn btn-success">Save</button>
-                <a href="{% url 'update_quiz' quiz.pk %}" class="btn btn-outline-secondary" role="button">Back</a>
-              </form>
+                  <option value="">Choose Course</option>
 
-                    </div>
-                </div>
+                  {% if courses %}
+                  {% for course in courses %}
+                <option value="{{ course.id }}">{{ course.name }}</option>
+                  {% endfor %}
+                  {% endif %}
+                </select>
+                                                </div>
+
+                             <div class="form-group">
+                            <div class="row">
+                                <div class="col"><label>Attach Image</label><br>
+                                    <input type="file" name="thumb" placeholder="Report Attachment" enctype="multipart/form-data">
+                                </div>
+                            </div>
+                        </div>
+
+                  <div class="form-group">
+                            <div class="row">
+                                <div class="col"><label>Tutorial Title</label><br>
+
+                                    <input type="text" name="title">
+                            </div>
+                        </div>
+                      </div>
+
+                              <div class="form-group">
+                            <div class="row">
+                                <div class="col"><label>Tutorial Content</label><br>
+                                <textarea name="content"s rows="5" cols="40"></textarea>
+
+                            </div>
+                        </div>
+                      </div>
+
+
+                          <div class="form-group">
+                            <div class="row">
+                                <button type="submit" style="background-color:" class="btn btn btn-primary" href="">Post</button>
+
+                            </div>
+                        </div>
+                </form>
+
+                               </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
         </main>
     </div>
 </body>

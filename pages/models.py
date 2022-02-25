@@ -28,15 +28,6 @@ class Profile(models.Model):
         return self.user.username
 
 
-class Announcement(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    posted_at = models.DateTimeField(auto_now=True, null=True)
-
-    def __str__(self):
-        return str(self.content)
-
-
 class Course(models.Model):
     name = models.CharField(max_length=30)
 
@@ -50,10 +41,20 @@ class Course(models.Model):
         return mark_safe(html)
 
 
+class Comments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    content = models.TextField()
+    posted_at = models.DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        return str(self.content)
+
+
 class Tutorial(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
-    thumb = models.ImageField(upload_to='', null=True, blank=True)
+    thumb = models.ImageField(upload_to='media', null=True, blank=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -124,7 +125,7 @@ class Lecturer(models.Model):
 
 
 class TakenQuiz(models.Model):
-    learner = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='taken_quizzes')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='taken_quizzes')
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='taken_quizzes')
     score = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)

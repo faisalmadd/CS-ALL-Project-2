@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     {% load static %}
-    {% load crispy_forms_tags %}
 
     <meta charset="UTF-8">
-    <title>Add Questions | INTI Online Tutor System</title>
+    <title>Tutorial Detail | INTI Online Tutor System</title>
     <!--Line-Awesome Style-->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css">
@@ -27,18 +26,18 @@
                 </li>
                 <li>
                     <a href="{% url 'add_course' %}"><span class="las la-microchip"></span>
-                    <span>Add Topic</span></a>
+                    <span>Add Course</span></a>
                 </li>
                 <li>
-                    <a href=""><span class="las la-book"></span>
-                    <span>Lessons</span></a>
+                    <a href="" class="active"><span class="las la-book"></span>
+                    <span>Tutorials</span></a>
                 </li>
                 <li>
                     <a href=""><span class="las la-comments"></span>
                     <span>Discussion</span></a>
                 </li>
                 <li>
-                    <a href="{% url 'list_quiz' %}" class="active"><span class="las la-certificate"></span>
+                    <a href="{% url 'list_quiz' %}"><span class="las la-certificate"></span>
                     <span>Quizzes</span></a>
                 </li>
                 <li>
@@ -79,44 +78,42 @@
         </header>
 
         <main>
-            <div class="container-fluid">
-            <!-- Breadcrumbs-->
-            <ol class="breadcrumb">
+            <!-- Blog Entries Column -->
+      <div class="col-md-8" style="padding-top: 20px">
+           <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <legend href="#" style="color: var(--main-color); font-size: 1.3rem;">Add a Question</legend>
+                  <a href="{% url 'list_tutorial' %}" style="padding-left: 10px">
+                            <button type="submit" class="btn btn-primary">Back</button>
+                            </a>
+
+                    <a href="" style="color: green; font-weight: bold; letter-spacing: 10px; padding-left: 30px">{{ object.title }} </a>
+
+
                 </li>
             </ol>
-            <div class="card mb-3">
-                <div class="card-body">
-                   {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
 
-             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="">My Quizzes</a></li>
-                  <li class="breadcrumb-item"><a href="">{{ quiz.name }}</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Add a new question</li>
-                </ol>
-              </nav>
-              <h2 class="mb-3">Add a new question</h2>
-              <p class="lead">Add first the text of the question. In the next step you will be able to add the possible answers.</p>
-              <form method="POST" novalidate>
-                {% csrf_token %}
-                {{ form|crispy }}
-                <br><button type="submit" class="btn btn-success">Save</button>
-                <a href="{% url 'update_quiz' quiz.pk %}" class="btn btn-outline-secondary" role="button">Back</a>
-              </form>
+        <h1 class="my-4">
+          <small></small>
+        </h1>
 
-                    </div>
-                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Blog Post -->
+        <div class="card mb-4">
+          {% if object.thumb %}
+              <img src="{{ object.thumb.url }}" alt="{{ object.title }}" style="width:500px; height:500px">
+          {% else %}
+                <p></p>
+          {% endif %}
+          <div class="card-body">
+            <h2 class="card-title"></h2>
+            <p class="card-text">{{ object.content|linebreaks }}</p>
+          </div>
+          <div class="card-footer text-muted">
+            Posted on {{ object.created_at }} by
+            <a href="#">{{ object.user.username }}</a>
 
+          </div>
+        </div>
+      </div>
         </main>
     </div>
 </body>

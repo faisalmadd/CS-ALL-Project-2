@@ -38,8 +38,8 @@
                     <span>Discussion</span></a>
                 </li>
                 <li>
-                    <a href="{% url 'add_quiz' %}" class="active"><span class="las la-certificate"></span>
-                    <span>Add Quiz</span></a>
+                    <a href="{% url 'list_quiz' %}" class="active"><span class="las la-certificate"></span>
+                    <span>Quizzes</span></a>
                 </li>
                 <li>
                     <a href=""><span class="las la-fingerprint"></span>
@@ -79,11 +79,11 @@
         </header>
 
         <main>
-            <div class="container-fluid" style="padding-top: 20px">
+            <div class="container-fluid">
             <!-- Breadcrumbs-->
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="#" style="color: #999965; font-weight: bold; letter-spacing: 10px">Learning Management System</a>
+                    <legend href="#" style="color: var(--main-color); font-size: 1.3rem;">Update Quiz</legend>
                 </li>
             </ol>
             <div class="card mb-3">
@@ -144,8 +144,8 @@
                   <small class="form-text text-muted">Your question may have at least <strong>2</strong> answers and maximum <strong>10</strong> answers. Select at least one correct answer.</small>
                 </p>
                 <button type="submit" class="btn btn-success">Save changes</button>
-                <a href="" class="btn btn-outline-secondary" role="button">Nevermind</a>
-                <a href="" class="btn btn-danger float-right">Delete</a>
+                <a href="{% url 'update_quiz' quiz.pk %}" class="btn btn-outline-secondary" role="button">Back</a>
+                <a href="{% url 'delete_question' quiz.pk question.pk %}" class="btn btn-danger float-right">Delete</a>
               </form>
 
                         </div>

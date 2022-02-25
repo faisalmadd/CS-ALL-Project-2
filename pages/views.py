@@ -3,13 +3,13 @@ from django.contrib import auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, ListView, DeleteView, UpdateView
-from .models import TakenQuiz, Profile, Quiz, Question, Answer, Student, User, Course, Tutorial, Notes, Announcement
+from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
+from .models import TakenQuiz, Profile, Quiz, Question, Answer, Student, User, Course, Tutorial, Notes, Comments
 from .forms import StudentRegistrationForm, LecturerRegistrationForm, AdminStudentRegistrationForm, QuestionForm, \
     BaseAnswerInlineFormSet
 
@@ -101,15 +101,33 @@ def profile_view(request, *args, **kwargs):
 
 
 def student_dashboard(request, *args, **kwargs):
-    return render(request, "dashboard/student/dashboard.html", {})
+    student = User.objects.filter(is_student=True).count()
+    lecturer = User.objects.filter(is_lecturer=True).count()
+    course = Course.objects.all().count()
+    users = User.objects.all().count()
+    context = {'student': student, 'course': course, 'lecturer': lecturer, 'users': users}
+
+    return render(request, "dashboard/student/dashboard.html", context)
 
 
 def lecturer_dashboard(request, *args, **kwargs):
-    return render(request, "dashboard/lecturer/dashboard.html", {})
+    student = User.objects.filter(is_student=True).count()
+    lecturer = User.objects.filter(is_lecturer=True).count()
+    course = Course.objects.all().count()
+    users = User.objects.all().count()
+    context = {'student': student, 'course': course, 'lecturer': lecturer, 'users': users}
+
+    return render(request, "dashboard/lecturer/dashboard.html", context)
 
 
 def admin_dashboard(request, *args, **kwargs):
-    return render(request, "dashboard/admin/dashboard.html", {})
+    student = User.objects.filter(is_student=True).count()
+    lecturer = User.objects.filter(is_lecturer=True).count()
+    course = Course.objects.all().count()
+    users = User.objects.all().count()
+    context = {'student': student, 'course': course, 'lecturer': lecturer, 'users': users}
+
+    return render(request, "dashboard/admin/dashboard.html", context)
 
 
 def add_course(request):
@@ -139,6 +157,43 @@ class DeleteUser(SuccessMessageMixin, DeleteView):
     template_name = 'dashboard/admin/delete_user.html'
     success_url = reverse_lazy('manage_users')
     success_message = 'User was deleted successfully!'
+
+
+def add_tutorial(request):
+    courses = Course.objects.only('id', 'name')
+    context = {'courses': courses}
+
+    return render(request, 'dashboard/lecturer/add_tutorial.html', context)
+
+
+def post_tutorial(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        course_id = request.POST['course_id']
+        content = request.POST['content']
+        thumb = request.FILES['thumb']
+        current_user = request.user
+        author_id = current_user.id
+        print(author_id)
+        print(course_id)
+        a = Tutorial(title=title, content=content, thumb=thumb, user_id=author_id, course_id=course_id)
+        a.save()
+        messages.success(request, 'Tutorial was posted successfully!')
+        return redirect('add_tutorial')
+    else:
+        messages.error(request, 'Tutorial was not posted successfully!')
+        return redirect('add_tutorial')
+
+
+def list_tutorial(request):
+    tutorials = Tutorial.objects.all().order_by('-created_at')
+    tutorials = {'tutorials': tutorials}
+    return render(request, 'dashboard/lecturer/list_tutorial.html', tutorials)
+
+
+class LecturerTutorialDetail(LoginRequiredMixin, DetailView):
+    model = Tutorial
+    template_name = 'dashboard/lecturer/tutorial_detail.html'
 
 
 class AddQuizView(CreateView):
@@ -171,6 +226,10 @@ class UpdateQuizView(UpdateView):
 
 
 def add_question(request, pk):
+    # By filtering the quiz by the url keyword argument `pk` and by the owner, which is the logged in user,
+    # we are protecting this view at the object-level. Meaning only the owner of quiz will be able to add questions
+    # to it.
+    # calls the Quiz model and get object from that. If that object or model doesn't exist it raise 404 error.
     quiz = get_object_or_404(Quiz, pk=pk, owner=request.user)
 
     if request.method == 'POST':
@@ -188,12 +247,14 @@ def add_question(request, pk):
 
 
 def update_question(request, quiz_pk, question_pk):
+    # calls the Quiz model and get object from that. If that object or model doesn't exist it raise 404 error.
     quiz = get_object_or_404(Quiz, pk=quiz_pk, owner=request.user)
+    # calls the Question model and get object from that. If that object or model doesn't exist it raise 404 error.
     question = get_object_or_404(Question, pk=question_pk, quiz=quiz)
 
     AnswerFormatSet = inlineformset_factory(
-        Question,
-        Answer,
+        Question,  # parent model
+        Answer,  # base model
         formset=BaseAnswerInlineFormSet,
         fields=('text', 'is_correct'),
         min_num=2,
@@ -226,7 +287,7 @@ class QuizListView(ListView):
     model = Quiz
     ordering = ('name',)
     context_object_name = 'quizzes'
-    template_name = 'dashboard/lecturer/update_quiz_list.html'
+    template_name = 'dashboard/lecturer/list_quiz.html'
 
     def get_queryset(self):
         queryset = self.request.user.quizzes \
@@ -234,3 +295,65 @@ class QuizListView(ListView):
             .annotate(questions_count=Count('questions', distinct=True)) \
             .annotate(taken_count=Count('taken_quizzes', distinct=True))
         return queryset
+
+
+class DeleteQuestion(DeleteView):
+    model = Question
+    context_object_name = 'question'
+    template_name = 'dashboard/lecturer/delete_question.html'
+    pk_url_kwarg = 'question_pk'
+
+    def get_context_data(self, **kwargs):
+        question = self.get_object()
+        kwargs['quiz'] = question.quiz
+        return super().get_context_data(**kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        question = self.get_object()
+        messages.success(request, 'The question was deleted successfully', question.text)
+        return super().delete(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Question.objects.filter(quiz__owner=self.request.user)
+
+    def get_success_url(self):
+        question = self.get_object()
+        return reverse('update_quiz', kwargs={'pk': question.quiz_id})
+
+
+class DeleteQuiz(DeleteView):
+    model = Quiz
+    context_object_name = 'quiz'
+    template_name = 'dashboard/lecturer/delete_quiz.html'
+    success_url = reverse_lazy('list_quiz')
+
+    def delete(self, request, *args, **kwargs):
+        quiz = self.get_object()
+        messages.success(request, 'The quiz %s was deleted with success!' % quiz.name)
+        return super().delete(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.request.user.quizzes.all()
+
+
+class ResultsView(DeleteView):
+    model = Quiz
+    context_object_name = 'quiz'
+    template_name = 'dashboard/lecturer/quiz_results.html'
+
+    def get_context_data(self, **kwargs):
+        quiz = self.get_object()
+        taken_quizzes = quiz.taken_quizzes.select_related('student__user').order_by('-date')
+        total_taken_quizzes = taken_quizzes.count()
+        quiz_score = quiz.taken_quizzes.aggregate(average_score=Avg('score'))
+        extra_context = {
+            'taken_quizzes': taken_quizzes,
+            'total_taken_quizzes': total_taken_quizzes,
+            'quiz_score': quiz_score
+        }
+
+        kwargs.update(extra_context)
+        return super().get_context_data(**kwargs)
+
+    def get_queryset(self):
+        return self.request.user.quizzes.all()

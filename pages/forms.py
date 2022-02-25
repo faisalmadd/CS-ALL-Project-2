@@ -19,9 +19,6 @@ class StudentRegistrationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(StudentRegistrationForm, self).__init__(*args, **kwargs)
 
-        for fieldnames in ['username', 'email', 'contact', 'password1', 'password2', 'captcha']:
-            self.fields[fieldnames].help_text = None
-
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
@@ -42,9 +39,6 @@ class AdminStudentRegistrationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(AdminStudentRegistrationForm, self).__init__(*args, **kwargs)
 
-        for fieldnames in ['username', 'email', 'contact', 'password1', 'password2']:
-            self.fields[fieldnames].help_text = None
-
     @transaction.atomic
     def save(self):
         user = super().save(commit=False)
@@ -64,9 +58,6 @@ class LecturerRegistrationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(LecturerRegistrationForm, self).__init__(*args, **kwargs)
-
-        for fieldnames in ['username', 'email', 'contact', 'password1', 'password2']:
-            self.fields[fieldnames].help_text = None
 
     @transaction.atomic
     def save(self):
