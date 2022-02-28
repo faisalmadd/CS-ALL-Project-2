@@ -33,7 +33,6 @@ class StudentRegisterView(CreateView):
         login(self.request, user)
         user = form.cleaned_data.get('username')
         messages.success(self.request, f'Hi {user}, your account was created successfully!')
-        # return redirect('learner')
         return redirect('home')
 
 

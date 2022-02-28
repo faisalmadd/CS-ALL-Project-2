@@ -64,7 +64,7 @@ class Comments(models.Model):
 class Notes(models.Model):
     pdf_file = models.FileField(upload_to='', null=True, blank=True)
     ppt_file = models.FileField(upload_to='', null=True, blank=True)
-    tutorial = models.ForeignKey(Tutorial, on_delete=models.CASCADE)
+    tutorial = models.ForeignKey(Tutorial, related_name='notes', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def delete(self, *args, **kwargs):
