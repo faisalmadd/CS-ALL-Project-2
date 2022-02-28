@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from pages.models import (Student, User, Lecturer, Question)
+from pages.models import (Student, User, Lecturer, Question, Comments)
 
 
 class StudentRegistrationForm(UserCreationForm):
@@ -86,3 +86,13 @@ class BaseAnswerInlineFormSet(forms.BaseInlineFormSet):
                     break
         if not has_one_correct_answer:
             raise ValidationError('Mark at least one answer as correct.', code='no_correct_answer')
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comments
+        fields = ('content', )
+
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control'}),
+        }

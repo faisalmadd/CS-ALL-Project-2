@@ -41,24 +41,24 @@ class Course(models.Model):
         return mark_safe(html)
 
 
-class Comments(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    content = models.TextField()
-    posted_at = models.DateTimeField(auto_now=True, null=True)
-
-    def __str__(self):
-        return str(self.content)
-
-
 class Tutorial(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
-    thumb = models.ImageField(upload_to='media', null=True, blank=True)
+    image = models.ImageField(upload_to='media', null=True, blank=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     video = EmbedVideoField(blank=True, null=True)
+
+
+class Comments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tutorial = models.ForeignKey(Tutorial, related_name='comments', on_delete=models.CASCADE)
+    content = models.TextField()
+    posted_at = models.DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        return '%s - %s' % (self.tutorial.title, self.user.username)
 
 
 class Notes(models.Model):

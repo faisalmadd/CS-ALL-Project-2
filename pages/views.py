@@ -11,7 +11,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 from .models import TakenQuiz, Profile, Quiz, Question, Answer, Student, User, Course, Tutorial, Notes, Comments
 from .forms import StudentRegistrationForm, LecturerRegistrationForm, AdminStudentRegistrationForm, QuestionForm, \
-    BaseAnswerInlineFormSet
+    BaseAnswerInlineFormSet, CommentForm
 
 
 # Create your views here.
@@ -171,12 +171,13 @@ def post_tutorial(request):
         title = request.POST['title']
         course_id = request.POST['course_id']
         content = request.POST['content']
-        thumb = request.FILES['thumb']
+        image = request.FILES['thumb']
+        video = request.POST['video']
         current_user = request.user
         author_id = current_user.id
         print(author_id)
         print(course_id)
-        a = Tutorial(title=title, content=content, thumb=thumb, user_id=author_id, course_id=course_id)
+        a = Tutorial(title=title, content=content, image=image, video=video, user_id=author_id, course_id=course_id)
         a.save()
         messages.success(request, 'Tutorial was posted successfully!')
         return redirect('add_tutorial')
@@ -194,6 +195,19 @@ def list_tutorial(request):
 class LecturerTutorialDetail(LoginRequiredMixin, DetailView):
     model = Tutorial
     template_name = 'dashboard/lecturer/tutorial_detail.html'
+
+
+class AddComment(CreateView):
+    model = Comments
+    form_class = CommentForm
+    template_name = 'dashboard/lecturer/add_comment.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.tutorial_id = self.kwargs['pk']
+        return super().form_valid(form)
+
+    success_url = reverse_lazy('list_tutorial')
 
 
 class AddQuizView(CreateView):

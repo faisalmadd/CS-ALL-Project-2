@@ -15,12 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+
+from django.conf import settings
+from django.conf.urls.static import static
 from pages.views import homepage_view, contact_view, StudentRegisterView, profile_view, admin_dashboard, \
     student_dashboard, lecturer_dashboard, login_view, login_form, LecturerRegisterView, \
     AdminStudentRegisterView, ManageUserView, DeleteUser, add_course, AddQuizView, UpdateQuizView, add_question, \
     update_question, QuizListView, DeleteQuestion, DeleteQuiz, ResultsView, post_tutorial, LecturerTutorialDetail, \
-    list_tutorial, add_tutorial
+    list_tutorial, add_tutorial, AddComment
 from django.contrib.auth import views as auth_view
+
 
 urlpatterns = [
     path('', homepage_view, name='home'),  # 1st arg '' means Home Page
@@ -55,8 +59,12 @@ urlpatterns = [
     path('post/', post_tutorial, name='post_tutorial'),
     path('list_tutorial/', list_tutorial, name='list_tutorial'),
     path('lecturer_tutorials/<int:pk>/', LecturerTutorialDetail.as_view(), name="lecturer_tutorial_detail"),
+    path('lecturer_tutorials/<int:pk>/comment', AddComment.as_view(), name="lecturer_add_comment"),
 
     # student pages
     path('student/dashboard/', student_dashboard, name='student_dashboard'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -79,7 +79,7 @@
 
         <main>
                   <!-- Blog Entries Column -->
-      <div class="col-md-8">
+      <div class="col-md-8" style="width: 100%;">
         {% for tutorial in tutorials %}
 
         <h1 class="my-4">
@@ -88,16 +88,17 @@
 
         <!-- Blog Post -->
         <div class="card mb-4">
-            <h2 class="card-title text-primary">{{ tutorial.course.name }} - {{ tutorial.title }}</h2>
+            <center><h2 class="card-title text-primary" style="color: var(--main-color); font-size: 1.3rem;">
+                {{tutorial.course}} - {{ tutorial.title }}</h2></center>
 
-          {% if tutorial.thumb %}
-              <img src="{{ tutorial.thumb.url }}" alt="{{ tutorial.title }}" style="width:400px; height: 400px">
+          {% if tutorial.image %}
+              <img src="{{ tutorial.image.url }}" alt="{{ tutorial.title }}" width="50%">
           {% else %}
                 <p></p>
           {% endif %}
           <div class="card-body">
             <p class="card-text">{{ tutorial.content | truncatechars:100 }}</p>
-            <a href="{% url 'lecturer_tutorial_detail' tutorial.pk %}" class="btn btn-primary">Read More &rarr;</a>
+            <a href="{% url 'lecturer_tutorial_detail' tutorial.pk %}" class="btn btn-primary">Begin Reading &rarr;</a>
           </div>
           <div class="card-footer text-muted">
             Posted on {{ tutorial.created_at }} by
@@ -105,26 +106,7 @@
           </div>
         </div>
 
-
         {% endfor %}
-
-
-         {% if is_paginated %}
-        <!-- Pagination -->
-        <ul class="pagination justify-content-center mb-4">
-           {% if page_obj.has_previous %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&larr; Previous page</a>
-          </li>
-           {% endif %}
-
-           {% if page_obj.has_next %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next page &rarr;</a>
-          </li>
-           {% endif %}
-        </ul>
-        {% endif %}
 
       </div>
         </main>

@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     {% load static %}
-    {% load crispy_forms_tags humanize %}
 
     <meta charset="UTF-8">
-    <title>Tutorial Detail | INTI Online Tutor System</title>
+    <title>Add Comment | INTI Online Tutor System</title>
     <!--Line-Awesome Style-->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css">
@@ -79,58 +78,30 @@
         </header>
 
         <main>
-            <!-- Blog Entries Column -->
-      <div class="col-md-8" style="width: 100%;">
-           <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                  <legend href="" style="color: var(--main-color); font-size: 1.3rem;">{{ object.title }} </legend>
-                </li>
-            </ol>
+              <div id="content-wrapper">
+        <div class="container-fluid">
+            <div class="card mb-3">
+                <div class="card-header" style="color: var(--main-color); font-size: 1.3rem;">
+                    <i class="fas fa-table text-primary"></i>
+                    Add a Comment
+                </div>
+                <div class="card-body">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
 
-        <h1 class="my-4">
-          <small></small>
-        </h1>
+                <div class="form-group">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button class="btn btn-secondary">Add Comment</button>
 
-        <!-- Blog Post -->
-        <div class="card mb-4">
-          {% if object.image %}
-              <img src="{{ object.image.url }}" alt="{{ object.title }}" width="50%">
-          {% else %}
-                <p></p>
-          {% endif %}
-          <div class="card-body">
-            <h2 class="card-title"></h2>
-            <p class="card-text">{{ object.content|linebreaks }}</p>
-              <h2>Video:</h2>
-              <iframe width="800" height="500"
-                src="{{ object.video }}">
-            </iframe>
-          </div>
-          <div class="card-footer text-muted">
-            Posted on {{ object.created_at }} by
-            <a href="#">{{ object.user.username }}</a>
-
-          </div>
-        </div>
-      </div>
-            <div class="card mb-4" style="width: 100%;">
-                <span style="margin-left: 1rem; margin-right: 1rem;">
-            <br><h2 style="color: var(--main-color); font-size: 1.7rem;">Comments...</h2>
-            {% if not tutorial.comments.all %}
-                No Comments Yet...<a href="{% url 'lecturer_add_comment' tutorial.pk %}">Add a Comment</a>
-            {% else %}
-                    <hr>
-                {% for comment in tutorial.comments.all %}
-                    <strong style="color: var(--main-color);">{{comment.user.username}} - {{comment.posted_at| naturaltime}}</strong><br>
-                    {{comment.content}}<br>
-                    <hr>
-                {% endfor %}
-                    <a href="{% url 'lecturer_add_comment' tutorial.pk %}"><button type="submit" class="btn btn-primary">Add a Comment</button></a>
-            {% endif %}
-                    <br>
-                </span>
+                    </form>
+                </div>
             </div>
-            <a href="{% url 'list_tutorial' %}" style="padding-left: 10px"><button type="submit" class="btn btn-primary">Back</button></a><br>
+
         </main>
     </div>
 </body>
