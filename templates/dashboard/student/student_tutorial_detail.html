@@ -78,56 +78,77 @@
         <main>
             <!-- Blog Entries Column -->
             <div class="col-md-8" style="width: 100%;">
-                 <ol class="breadcrumb">
-                      <li class="breadcrumb-item">
-                        <legend href="" style="color: var(--main-color); font-size: 1.3rem;">{{ object.title }} </legend>
-                      </li>
-                  </ol>
+           <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                  <strong><legend style="color: var(--main-color); font-size: 1.3rem; margin-left: 1rem;">{{ object.title }} </legend></strong>
+                </li>
+            </ol>
 
-              <h1 class="my-4">
-                <small></small>
-              </h1>
+        <h1 class="my-4">
+          <small></small>
+        </h1>
 
-              <!-- Blog Post -->
-              <div class="card mb-4">
-                {% if object.image %}
-                    <img src="{{ object.image.url }}" alt="{{ object.title }}" width="50%">
-                {% else %}
-                      <p></p>
-                {% endif %}
-                <div class="card-body">
-                  <h2 class="card-title"></h2>
-                  <p class="card-text">{{ object.content|linebreaks }}</p>
-                    <h2>Video:</h2>
-                    <iframe width="800" height="500"
-                      src="{{ object.video }}">
-                  </iframe>
-                </div>
-                <div class="card-footer text-muted">
-                  Posted on {{ object.created_at }} by
-                  <a href="#">{{ object.user.username }}</a>
+        <!-- Blog Post -->
+        <div class="card mb-4">
+          {% if object.image %}
+              <img src="{{ object.image.url }}" alt="{{ object.title }}" width="50%">
+          {% else %}
+                <p></p>
+          {% endif %}
+          <div class="card-body">
+            <h2 class="card-title"></h2>
+            <p class="card-text">{{ object.content|linebreaks }}</p>
+              <h2>Video:</h2>
+              <iframe width="800" height="500"
+                src="{{ object.video }}">
+            </iframe>
+          </div>
+          <div class="card-footer text-muted">
+            Posted on {{ object.created_at }} by
+            <a href="#">{{ object.user.username }}</a>
 
-                </div>
-              </div>
+          </div>
+        </div>
+      </div>
+
+            <div class="card mb-4" style="width: 100%;">
+                <span style="margin-left: 1rem; margin-right: 1rem;">
+            <br><h2 style="color: var(--main-color); font-size: 1.7rem;">Notes</h2>
+            {% if not tutorial.notes.all %}
+                No Notes Added Yet...
+            {% else %}
+                    <hr>
+                {% for note in tutorial.notes.all %}
+                    <a href="{{ note.pdf_file.url }}" download class="btn btn-outline-success">Download PDF</a>
+                    <a href="{{ note.pdf_file.url }}" class="btn btn-outline-primary" target="_blank">View PDF</a><br>
+                    <hr>
+                    <a href="{{ note.ppt_file.url }}" download class="btn btn-outline-success">Download PowerPoint</a>
+                    <a href="{{ note.ppt_file.url }}" class="btn btn-outline-primary" target="_blank">View PowerPoint</a>
+                    <hr>
+                {% endfor %}
+            {% endif %}
+                    <br>
+                </span>
             </div>
-                  <div class="card mb-4" style="width: 100%;">
-                      <span style="margin-left: 1rem; margin-right: 1rem;">
-                  <br><h2 style="color: var(--main-color); font-size: 1.7rem;">Comments...</h2>
-                  {% if not tutorial.comments.all %}
-                      No Comments Yet...<a href="{% url 'student_add_comment' tutorial.pk %}">Add a Comment</a>
-                  {% else %}
-                          <hr>
-                      {% for comment in tutorial.comments.all %}
-                          <strong style="color: var(--main-color);">{{comment.user.username}} - {{comment.posted_at| naturaltime}}</strong><br>
-                          {{comment.content}}<br>
-                          <hr>
+
+            <div class="card mb-4" style="width: 100%;">
+                <span style="margin-left: 1rem; margin-right: 1rem;">
+            <br><h2 style="color: var(--main-color); font-size: 1.7rem;">Comments...</h2>
+            {% if not tutorial.comments.all %}
+                No Comments Yet...<a href="{% url 'lecturer_add_comment' tutorial.pk %}">Add a Comment</a>
+            {% else %}
+                    <hr>
+                {% for comment in tutorial.comments.all %}
+                    <strong style="color: var(--main-color);">{{comment.user.username}} - {{comment.posted_at| naturaltime}}</strong><br>
+                    {{comment.content}}<br>
+                    <hr>
                       {% endfor %}
                           <a href="{% url 'student_add_comment' tutorial.pk %}"><button type="submit" class="btn btn-primary">Add a Comment</button></a>
                   {% endif %}
                           <br>
                       </span>
                   </div>
-                  <a href="{% url 'list_tutorial' %}" style="padding-left: 10px"><button type="submit" class="btn btn-primary">Back</button></a><br>
+                  <a href="{% url 'student_tutorials' %}" style="padding-left: 10px"><button type="submit" class="btn btn-primary">Back</button></a><br>
               </main>
           </div>
       </body>
