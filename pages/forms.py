@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from pages.models import (Student, User, Lecturer, Question, Comments)
+from pages.models import *
 
 
 class StudentRegistrationForm(UserCreationForm):
@@ -96,3 +96,20 @@ class CommentForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+
+class TakeQuizForm(forms.ModelForm):
+    ans = forms.ModelChoiceField(
+        queryset = Answer.objects.none(),
+        widget=forms.RadioSelect(),
+        required=True,
+        empty_label=None)
+
+    class Meta:
+        model = StudentAnswer
+        fields = ('answer', )
+
+    def __init__(self, *args, **kwargs):
+        question = kwargs.pop('question')
+        super().__init__(*args, **kwargs)
+        self.fields['answer'].queryset = question.answers.order_by('text')

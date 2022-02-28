@@ -11,7 +11,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 from .models import TakenQuiz, Profile, Quiz, Question, Answer, Student, User, Course, Tutorial, Notes, Comments
 from .forms import StudentRegistrationForm, LecturerRegistrationForm, AdminStudentRegistrationForm, QuestionForm, \
-    BaseAnswerInlineFormSet, CommentForm
+    BaseAnswerInlineFormSet, CommentForm, TakeQuizForm
 
 
 # Create your views here.
@@ -208,6 +208,19 @@ class AddComment(CreateView):
     success_url = reverse_lazy('list_tutorial')
 
 
+class AddCommentStudent(CreateView):
+    model = Comments
+    form_class = CommentForm
+    template_name = 'dashboard/student/add_comment.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.tutorial_id = self.kwargs['pk']
+        return super().form_valid(form)
+
+    success_url = reverse_lazy('student_tutorials')
+
+
 def add_notes(request):
     tutorials = Tutorial.objects.only('id', 'title')
     context = {'tutorials': tutorials}
@@ -392,3 +405,81 @@ class ResultsView(DeleteView):
 
     def get_queryset(self):
         return self.request.user.quizzes.all()
+
+
+def student_tutorials(request):
+    tutorials = Tutorial.objects.all().order_by('-created_at')
+    tutorials = {'tutorials': tutorials}
+    return render(request, 'dashboard/student/student_tutorials.html', tutorials)
+
+    
+class StudentTutorialDetail(LoginRequiredMixin, DetailView):
+    model = Tutorial
+    template_name = 'dashboard/student/student_tutorial_detail.html'
+
+    
+class StudentQuizListView(ListView):
+    model = Quiz
+    ordering = ('name',)
+    context_object_name = 'quizzes'
+    template_name = 'dashboard/student/student_list_quiz.html'
+
+    def get_queryset(self):
+        student = self.request.user.student
+        taken_quizzes = student.quizzes.values_list('pk', flat=True)
+        queryset = Quiz.objects.all()
+        return queryset
+
+
+class TakenQuizListView(ListView):
+    model = TakenQuiz
+    context_object_name = 'taken_quizzes'
+    template_name = 'dashboard/student/taken_quiz_list.html'
+
+    def get_queryset(self):
+        queryset = self.request.user.student.taken_quizzes \
+            .select_related('quiz', 'quiz__course') \
+            .order_by('quiz__name')
+        return queryset
+
+
+def take_quiz(request, pk):
+    quiz = get_object_or_404(Quiz, pk=pk)
+    student = request.user.student
+
+    if student.quizzes.filter(pk=pk).exists():
+        return render(request, 'dashboard/student/taken_quiz.html')
+
+    total_questions = quiz.questions.count()
+    unanswered_questions = student.get_unanswered_questions(quiz)
+    total_unanswered_questions = unanswered_questions.count()
+    progress = 100 - round(((total_unanswered_questions - 1) / total_questions) * 100)
+    question = unanswered_questions.first()
+
+    if request.method == 'POST':
+        form = TakeQuizForm(question=question, data=request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                student_answer = form.save(commit=False)
+                student_answer.student = student
+                student_answer.save()
+                if student.get_unanswered_questions(quiz).exists():
+                    return redirect('take_quiz', pk)
+                else:
+                    correct_answers = student.quiz_answers.filter(answer__question__quiz=quiz, answer__is_correct=True).count()
+                    score = round((correct_answers / total_questions) * 100.0, 2)
+                    TakenQuiz.objects.create(student=student, quiz=quiz, score=score)
+                    if score < 50.0:
+                        messages.warning(request, 'Better luck next time! Your score for the quiz was %s.' % (score))
+                    else:
+                        messages.success(request, 'Congratulations! You completed the quiz! You scored %s points.' % (score))
+                    return redirect('student_quiz_list')
+    else:
+        form = TakeQuizForm(question=question)
+
+    return render(request, 'dashboard/student/quiz_form.html', {
+        'quiz': quiz,
+        'question': question,
+        'form': form,
+        'progress': progress
+    })  
