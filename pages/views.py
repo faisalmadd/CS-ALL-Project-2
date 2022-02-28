@@ -162,7 +162,6 @@ class DeleteUser(SuccessMessageMixin, DeleteView):
 def add_tutorial(request):
     courses = Course.objects.only('id', 'name')
     context = {'courses': courses}
-
     return render(request, 'dashboard/lecturer/add_tutorial.html', context)
 
 
