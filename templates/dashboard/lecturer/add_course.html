@@ -25,16 +25,16 @@
                     <span>Lecturer Dashboard</span></a>
                 </li>
                 <li>
-                    <a href="{% url 'add_course' %}" class="active"><span class="las la-microchip"></span>
+                    <a href="{% url 'add_course' %}" class="active"><span class="las la-plus"></span>
                     <span>Add Course</span></a>
                 </li>
                 <li>
-                    <a href=""><span class="las la-book"></span>
-                    <span>Lessons</span></a>
+                    <a href="{% url 'add_tutorial' %}"><span class="las la-plus"></span>
+                    <span>Add Tutorial</span></a>
                 </li>
                 <li>
-                    <a href=""><span class="las la-comments"></span>
-                    <span>Discussion</span></a>
+                    <a href="{% url 'list_tutorial' %}"><span class="las la-book"></span>
+                    <span>Tutorials</span></a>
                 </li>
                 <li>
                     <a href="{% url 'list_quiz' %}"><span class="las la-certificate"></span>
@@ -109,7 +109,7 @@
                   </div>
                       <div class="form-group">
                         <div class="row">
-                            <button type="submit" style="background-color:" class="btn btn btn-primary" href="">Submit</button>
+                            <br><button type="submit" style="background-color: var(--main-color)" class="btn btn btn-primary" href="">Submit</button>
                         </div>
                     </div>
             </form>
