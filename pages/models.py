@@ -62,18 +62,14 @@ class Comments(models.Model):
 
 
 class Notes(models.Model):
-    title = models.CharField(max_length=500)
-    file = models.FileField(upload_to='', null=True, blank=True)
-    cover = models.ImageField(upload_to='', null=True, blank=True)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    pdf_file = models.FileField(upload_to='', null=True, blank=True)
+    ppt_file = models.FileField(upload_to='', null=True, blank=True)
+    tutorial = models.ForeignKey(Tutorial, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.title
-
     def delete(self, *args, **kwargs):
-        self.file.delete()
-        self.cover.delete()
+        self.pdf_file.delete()
+        self.ppt_file.delete()
         super().delete(*args, **kwargs)
 
 

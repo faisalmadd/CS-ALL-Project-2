@@ -22,7 +22,7 @@ from pages.views import homepage_view, contact_view, StudentRegisterView, profil
     student_dashboard, lecturer_dashboard, login_view, login_form, LecturerRegisterView, \
     AdminStudentRegisterView, ManageUserView, DeleteUser, add_course, AddQuizView, UpdateQuizView, add_question, \
     update_question, QuizListView, DeleteQuestion, DeleteQuiz, ResultsView, post_tutorial, LecturerTutorialDetail, \
-    list_tutorial, add_tutorial, AddComment
+    list_tutorial, add_tutorial, AddComment, add_notes, post_notes
 from django.contrib.auth import views as auth_view
 
 
@@ -55,11 +55,13 @@ urlpatterns = [
     path('quiz/<int:quiz_pk>/question/<int:question_pk>/delete/', DeleteQuestion.as_view(), name='delete_question'),
     path('quiz/<int:pk>/delete/', DeleteQuiz.as_view(), name='delete_quiz'),
     path('quiz/<int:pk>/results/', ResultsView.as_view(), name='quiz_results'),
-    path('tutorial/', add_tutorial, name='add_tutorial'),
+    path('add_tutorial/', add_tutorial, name='add_tutorial'),
     path('post/', post_tutorial, name='post_tutorial'),
     path('list_tutorial/', list_tutorial, name='list_tutorial'),
     path('lecturer_tutorials/<int:pk>/', LecturerTutorialDetail.as_view(), name="lecturer_tutorial_detail"),
     path('lecturer_tutorials/<int:pk>/comment', AddComment.as_view(), name="lecturer_add_comment"),
+    path('add_notes/', add_notes, name='add_notes'),
+    path('post_notes/', post_notes, name='post_notes'),
 
     # student pages
     path('student/dashboard/', student_dashboard, name='student_dashboard'),

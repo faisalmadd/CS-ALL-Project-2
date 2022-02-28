@@ -210,6 +210,29 @@ class AddComment(CreateView):
     success_url = reverse_lazy('list_tutorial')
 
 
+def add_notes(request):
+    tutorials = Tutorial.objects.only('id', 'title')
+    context = {'tutorials': tutorials}
+    return render(request, 'dashboard/lecturer/add_notes.html', context)
+
+
+def post_notes(request):
+    if request.method == 'POST':
+        tutorial_id = request.POST['tutorial_id']
+        pdf_file = request.FILES['pdf_file']
+        ppt_file = request.FILES['ppt_file']
+        current_user = request.user
+        user_id = current_user.id
+
+        a = Notes(ppt_file=ppt_file, pdf_file=pdf_file, user_id=user_id, tutorial_id=tutorial_id)
+        a.save()
+        messages.success = (request, 'Notes Was Published Successfully')
+        return redirect('add_notes')
+    else:
+        messages.error = (request, 'Notes Was Not Published Successfully')
+        return redirect('add_notes')
+
+
 class AddQuizView(CreateView):
     model = Quiz
     fields = ('name', 'course')
