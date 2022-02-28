@@ -62,14 +62,18 @@ class Comments(models.Model):
 
 
 class Notes(models.Model):
-    pdf_file = models.FileField(upload_to='', null=True, blank=True)
-    ppt_file = models.FileField(upload_to='', null=True, blank=True)
-    tutorial = models.ForeignKey(Tutorial, on_delete=models.CASCADE)
+    title = models.CharField(max_length=500)
+    file = models.FileField(upload_to='', null=True, blank=True)
+    cover = models.ImageField(upload_to='', null=True, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.title
+
     def delete(self, *args, **kwargs):
-        self.pdf_file.delete()
-        self.ppt_file.delete()
+        self.file.delete()
+        self.cover.delete()
         super().delete(*args, **kwargs)
 
 
@@ -102,6 +106,7 @@ class Answer(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     quizzes = models.ManyToManyField(Quiz, through='TakenQuiz')
+    interests = models.ManyToManyField(Course, related_name='interested_learners')
 
     def get_unanswered_questions(self, quiz):
         answered_questions = self.quiz_answers \
@@ -116,6 +121,7 @@ class Student(models.Model):
 
 class Lecturer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    interest = models.ManyToManyField(Course, related_name="more_locations")
 
 
 class TakenQuiz(models.Model):
