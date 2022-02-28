@@ -4,10 +4,11 @@
     {% load static %}
 
     <meta charset="UTF-8">
-    <title>Dashboard | INTI Online Tutor System</title>
+    <title>Tutorial List | INTI Online Tutor System</title>
     <!--Line-Awesome Style-->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <!--Css Style -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
@@ -20,11 +21,11 @@
         <div class="sidebar-menu">
             <ul>
                 <li>
-                    <a href="" class="active"><span class="las la-home"></span>
+                    <a href="{% url 'student_dashboard' %}"><span class="las la-home"></span>
                     <span>Student Dashboard</span></a>
                 </li>
                 <li>
-                    <a href="{% url 'student_tutorials' %}"><span class="las la-book"></span>
+                    <a href="{% url 'student_tutorials' %}" class="active"><span class="las la-microchip"></span>
                     <span>Lessons</span></a>
                 </li>
                 <li>
@@ -33,7 +34,7 @@
                 </li>
                 <li>
                     <a href="{% url 'student_list_quiz' %}"><span class="las la-certificate"></span>
-                    <span>Quiz</span></a>
+                    <span>Quizzes</span></a>
                 </li>
                 <li>
                     <a href=""><span class="las la-fingerprint"></span>
@@ -73,48 +74,38 @@
         </header>
 
         <main>
-            <div class="cards">
-                <div class="card-single">
-                    <div>
-                        <h1>{{ course }}</h1>
-                        <span>Courses</span>
-                    </div>
-                    <div>
-                        <span class="las la-clipboard-list"></span>
-                    </div>
-                </div>
+                  <!-- Blog Entries Column -->
+                  <div class="col-md-8" style="width: 100%;">
+                    {% for tutorial in tutorials %}
 
-                <div class="card-single">
-                    <div>
-                        <h1>{{ student }}</h1>
-                        <span>Students</span>
-                    </div>
-                    <div>
-                        <span class="las la-graduation-cap"></span>
-                    </div>
-                </div>
+                    <h1 class="my-4">
+                      <small></small>
+                    </h1>
 
-                <div class="card-single">
-                    <div>
-                        <h1>{{ lecturer }}</h1>
-                        <span>Lecturers</span>
-                    </div>
-                    <div>
-                        <span class="las la-lightbulb"></span>
-                    </div>
-                </div>
+                    <!-- Blog Post -->
+                    <div class="card mb-4">
+                        <center><h2 class="card-title text-primary" style="color: var(--main-color); font-size: 1.3rem;">
+                            {{tutorial.course}} - {{ tutorial.title }}</h2></center>
 
-                <div class="card-single">
-                    <div>
-                        <h1>{{ users }}</h1>
-                        <span>All Users</span>
+                      {% if tutorial.image %}
+                          <img src="{{ tutorial.image.url }}" alt="{{ tutorial.title }}" width="50%">
+                      {% else %}
+                            <p></p>
+                      {% endif %}
+                      <div class="card-body">
+                        <p class="card-text">{{ tutorial.content | truncatechars:100 }}</p>
+                        <a href="{% url 'student_tutorial_detail' tutorial.pk %}" class="btn btn-primary">Begin Reading &rarr;</a>
+                      </div>
+                      <div class="card-footer text-muted">
+                        Posted on {{ tutorial.created_at }} by
+                        <a href="#">{{ tutorial.user.username }}</a>
+                      </div>
                     </div>
-                    <div>
-                        <span class="las la-users"></span>
-                    </div>
+
+                    {% endfor %}
+
+                  </div>
+                    </main>
                 </div>
-            </div>
-        </main>
-    </div>
-</body>
-</html>
+            </body>
+            </html>
