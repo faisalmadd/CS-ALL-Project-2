@@ -18,11 +18,12 @@ from django.urls import path, include
 
 from django.conf import settings
 from django.conf.urls.static import static
-from pages.views import homepage_view, contact_view, StudentRegisterView, profile_view, admin_dashboard, \
+from pages.views import *
+"""from pages.views import homepage_view, contact_view, StudentRegisterView, profile_view, admin_dashboard, \
     student_dashboard, lecturer_dashboard, login_view, login_form, LecturerRegisterView, \
     AdminStudentRegisterView, ManageUserView, DeleteUser, add_course, AddQuizView, UpdateQuizView, add_question, \
     update_question, QuizListView, DeleteQuestion, DeleteQuiz, ResultsView, post_tutorial, LecturerTutorialDetail, \
-    list_tutorial, add_tutorial, AddComment, add_notes, post_notes
+    list_tutorial, add_tutorial, AddComment, add_notes, post_notes"""
 from django.contrib.auth import views as auth_view
 
 
@@ -65,6 +66,11 @@ urlpatterns = [
 
     # student pages
     path('student/dashboard/', student_dashboard, name='student_dashboard'),
+    path('student_tutorials/', student_tutorials, name='student_tutorials'),
+    path('student_tutorials/<int:pk>/', StudentTutorialDetail.as_view(), name='student_tutorial_detail'),
+    path('student_tutorials/<int:pk>/comment', AddCommentStudent.as_view(), name='student_add_comment'),
+    path('student_list_quiz/', StudentQuizListView.as_view(), name='student_list_quiz'),
+    path('quiz/<int:pk>/', take_quiz, name='take_quiz'),
 
 ]
 
