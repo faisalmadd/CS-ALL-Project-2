@@ -81,6 +81,9 @@ class Quiz(models.Model):
     def __str__(self):
         return self.name
 
+    def get_questions(self):
+        return self.questions.all()     # limit number_of_questions
+
 
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions')
@@ -88,6 +91,9 @@ class Question(models.Model):
 
     def __str__(self):
         return self.text
+
+    def get_answers(self):
+        return self.answers.all()   # related name answers in Answer model
 
 
 class Answer(models.Model):
@@ -123,8 +129,3 @@ class TakenQuiz(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='taken_quizzes')
     score = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
-
-
-class StudentAnswer(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='quiz_answers')
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='+')

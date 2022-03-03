@@ -21,31 +21,23 @@
         <div class="sidebar-menu">
             <ul>
                 <li>
-                    <a href="{% url 'lecturer_dashboard' %}"><span class="las la-home"></span>
-                    <span>Lecturer Dashboard</span></a>
+                    <a href="{% url 'student_dashboard' %}"><span class="las la-home"></span>
+                    <span>Student Dashboard</span></a>
                 </li>
                 <li>
-                    <a href="{% url 'add_course' %}"><span class="las la-plus"></span>
-                    <span>Add Course</span></a>
+                    <a href="{% url 'student_tutorials' %}"><span class="las la-book"></span>
+                    <span>Lessons</span></a>
                 </li>
                 <li>
-                    <a href="{% url 'add_tutorial' %}"><span class="las la-plus"></span>
-                    <span>Add Tutorial</span></a>
+                    <a href=""><span class="las la-comments"></span>
+                    <span>Discussion</span></a>
                 </li>
                 <li>
-                    <a href="{% url 'add_notes' %}"><span class="las la-plus"></span>
-                    <span>Add Notes</span></a>
+                    <a href="{% url 'student_list_quiz' %}"><span class="las la-certificate"></span>
+                    <span>Quiz</span></a>
                 </li>
                 <li>
-                    <a href="{% url 'list_tutorial' %}"><span class="las la-book"></span>
-                    <span>Tutorials</span></a>
-                </li>
-                <li>
-                    <a href="{% url 'list_quiz' %}"><span class="las la-certificate"></span>
-                    <span>Quizzes</span></a>
-                </li>
-                <li>
-                    <a href="{% url 'lecturer_profile' %}" class="active"><span class="las la-fingerprint"></span>
+                    <a href="{% url 'student_profile' %}" class="active"><span class="las la-fingerprint"></span>
                     <span>Profile</span></a>
                 </li>
                 <li>
@@ -146,9 +138,8 @@
                  {% endfor %}
                  {% else %}
                  <center><span><p class="text-danger">No profile created yet</p></span></center>
-                 <center><a href="{% url 'lecturer_create_profile' %}">Click here to create</center>
+                 <center><a href="{% url 'student_create_profile' %}">Click here to create</center>
                  {% endif %}
-
         </main>
     </div>
 </body>

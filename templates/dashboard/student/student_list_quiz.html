@@ -37,7 +37,7 @@
                   <span>Quizzes</span></a>
               </li>
               <li>
-                  <a href=""><span class="las la-fingerprint"></span>
+                  <a href="{% url 'student_profile' %}"><span class="las la-fingerprint"></span>
                   <span>Profile</span></a>
               </li>
               <li>
@@ -83,7 +83,7 @@
                 <div id="content-wrapper" style="padding-top: 20px">
                 <div class="container-fluid">
                 <div class="card mb-3">
-                <div class="card-header">
+                <div class="card-header" style="color: var(--main-color); font-size: 1.3rem;">
                     <i class="fas fa-table text-primary"></i>
                     List of Quiz Posted
                 </div>

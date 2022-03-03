@@ -71,8 +71,12 @@ urlpatterns = [
     path('student_tutorials/<int:pk>/', StudentTutorialDetail.as_view(), name='student_tutorial_detail'),
     path('student_tutorials/<int:pk>/comment', AddCommentStudent.as_view(), name='student_add_comment'),
     path('student_list_quiz/', StudentQuizListView.as_view(), name='student_list_quiz'),
-    path('quiz/<int:pk>/', take_quiz, name='take_quiz'),
-
+    # path('quiz/<int:pk>/', take_quiz, name='take_quiz'),
+    path('quiz/<int:pk>/', quiz_view, name='take_quiz'),
+    path('quiz/<int:pk>/data/', quiz_data_view, name='quiz_data_view'),
+    path('quiz/<int:pk>/save/', save_quiz_view, name='save_view'),
+    path('student_profile/', student_user_profile, name="student_profile"),
+    path('student_profile/create/', student_create_profile, name="student_create_profile"),
 ]
 
 if settings.DEBUG:

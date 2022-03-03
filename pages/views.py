@@ -6,13 +6,14 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from django.db.models import Count, Avg
 from django.forms import inlineformset_factory
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
 from .models import TakenQuiz, Profile, Quiz, Question, Answer, Student, User, Course, Tutorial, Notes, Comments
 from .forms import StudentRegistrationForm, LecturerRegistrationForm, AdminStudentRegistrationForm, QuestionForm, \
-    BaseAnswerInlineFormSet, CommentForm, TakeQuizForm
+    BaseAnswerInlineFormSet, CommentForm
 
 
 # Create your views here.
@@ -127,6 +128,39 @@ def lecturer_user_profile(request):
     users = Profile.objects.filter(user_id=user_id)
     users = {'users': users}
     return render(request, 'dashboard/lecturer/view_profile.html', users)
+
+
+def student_create_profile(request):
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        dob = request.POST['dob']
+        bio = request.POST['bio']
+        contact = request.POST['contact']
+        profile_pic = request.FILES['profile_pic']
+        current_user = request.user
+        user_id = current_user.id
+        print(user_id)
+
+        Profile.objects.filter(id=user_id).create(user_id=user_id, contact=contact, first_name=first_name, email=email,
+                                                  last_name=last_name, bio=bio, dob=dob, profile_pic=profile_pic)
+        messages.success(request, 'Your Profile Was Created Successfully')
+        return redirect('student_profile')
+    else:
+        current_user = request.user
+        user_id = current_user.id
+        users = Profile.objects.filter(user_id=user_id)
+        users = {'users': users}
+        return render(request, 'dashboard/student/create_profile.html', users)
+
+
+def student_user_profile(request):
+    current_user = request.user
+    user_id = current_user.id
+    users = Profile.objects.filter(user_id=user_id)
+    users = {'users': users}
+    return render(request, 'dashboard/student/view_profile.html', users)
 
 
 def student_dashboard(request, *args, **kwargs):
@@ -329,6 +363,7 @@ def update_question(request, quiz_pk, question_pk):
     # calls the Question model and get object from that. If that object or model doesn't exist it raise 404 error.
     question = get_object_or_404(Question, pk=question_pk, quiz=quiz)
 
+    # to specify format for the answers (min 2 answers, max 10 answers)
     AnswerFormatSet = inlineformset_factory(
         Question,  # parent model
         Answer,  # base model
@@ -441,12 +476,12 @@ def student_tutorials(request):
     tutorials = {'tutorials': tutorials}
     return render(request, 'dashboard/student/student_tutorials.html', tutorials)
 
-    
+
 class StudentTutorialDetail(LoginRequiredMixin, DetailView):
     model = Tutorial
     template_name = 'dashboard/student/student_tutorial_detail.html'
 
-    
+
 class StudentQuizListView(ListView):
     model = Quiz
     ordering = ('name',)
@@ -454,25 +489,11 @@ class StudentQuizListView(ListView):
     template_name = 'dashboard/student/student_list_quiz.html'
 
     def get_queryset(self):
-        student = self.request.user.student
-        taken_quizzes = student.quizzes.values_list('pk', flat=True)
         queryset = Quiz.objects.all()
         return queryset
 
 
-class TakenQuizListView(ListView):
-    model = TakenQuiz
-    context_object_name = 'taken_quizzes'
-    template_name = 'dashboard/student/taken_quiz_list.html'
-
-    def get_queryset(self):
-        queryset = self.request.user.student.taken_quizzes \
-            .select_related('quiz', 'quiz__course') \
-            .order_by('quiz__name')
-        return queryset
-
-
-def take_quiz(request, pk):
+'''def take_quiz(request, pk):
     quiz = get_object_or_404(Quiz, pk=pk)
     student = request.user.student
 
@@ -511,4 +532,74 @@ def take_quiz(request, pk):
         'question': question,
         'form': form,
         'progress': progress
-    })  
+    })'''
+
+
+def quiz_view(request, pk):
+    quiz = Quiz.objects.get(pk=pk)
+    return render(request, 'dashboard/student/quiz_form.html', {'obj': quiz})
+
+
+def quiz_data_view(request, pk):
+    quiz = Quiz.objects.get(pk=pk)
+    questions = []
+    for q in quiz.get_questions():  # grab list of questions
+        answers = []
+        for a in q.get_answers():  # grab list of answers
+            answers.append(a.text)
+        questions.append({str(q): answers})  # assigning each question their answers
+    return JsonResponse({
+        'quiz_data': questions,
+    })
+
+
+def save_quiz_view(request, pk):
+    # print(request.POST)
+    if request.is_ajax():
+        questions = []
+        data = request.POST
+        data_ = dict(data.lists())
+
+        data_.pop('csrfmiddlewaretoken')
+
+        for k in data_.keys():
+            print('key: ', k)
+            question = Question.objects.get(text=k)
+            questions.append(question)
+
+        student = request.user.student
+        quiz = Quiz.objects.get(pk=pk)
+
+        score = 0
+        total_questions = quiz.questions.count()
+        multiplier = 100 / total_questions
+        results = []
+        correct_answer = None
+
+        for q in questions:
+            answer_selected = request.POST.get(q.text)
+
+            if answer_selected != "":
+                question_answers = Answer.objects.filter(question=q)
+                for answer in question_answers:
+                    if answer_selected == answer.text:
+                        if answer.is_correct:
+                            score += 1
+                            correct_answer = answer.text
+                        else:
+                            if answer.is_correct:
+                                correct_answer = answer.text
+
+                results.append({str(q): {'correct_answer': correct_answer, 'answered': answer_selected}})
+            else:
+                results.append({str(q): 'not answered'})
+
+        score_ = score * multiplier
+        TakenQuiz.objects.create(quiz=quiz, student=student, score=score_)
+
+        if score_ < 50.0:
+            messages.warning(request, 'Better luck next time! Your score for the quiz was %s.' % (score_))
+            return JsonResponse({'passed': True, 'score': score_, 'results': results})
+        else:
+            messages.success(request, 'Congratulations! You completed the quiz! You scored %s points.' % (score_))
+            return JsonResponse({'passed': False, 'score': score_, 'results': results})

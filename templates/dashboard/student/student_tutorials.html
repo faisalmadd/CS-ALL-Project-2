@@ -37,7 +37,7 @@
                     <span>Quizzes</span></a>
                 </li>
                 <li>
-                    <a href=""><span class="las la-fingerprint"></span>
+                    <a href="{% url 'student_profile' %}"><span class="las la-fingerprint"></span>
                     <span>Profile</span></a>
                 </li>
                 <li>
@@ -84,7 +84,7 @@
 
                     <!-- Blog Post -->
                     <div class="card mb-4">
-                        <center><h2 class="card-title text-primary" style="color: var(--main-color); font-size: 1.3rem;">
+                        <br><center><h2 class="card-title text-primary" style="color: var(--main-color); font-size: 1.3rem;">
                             {{tutorial.course}} - {{ tutorial.title }}</h2></center>
 
                       {% if tutorial.image %}
