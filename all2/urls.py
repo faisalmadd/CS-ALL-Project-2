@@ -34,7 +34,6 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('login_form/', login_form, name='login_form'),
     path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name='logout'),
-    path('profile/', profile_view, name='profile'),
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
 
@@ -63,6 +62,8 @@ urlpatterns = [
     path('lecturer_tutorials/<int:pk>/comment', AddComment.as_view(), name="lecturer_add_comment"),
     path('add_notes/', add_notes, name='add_notes'),
     path('post_notes/', post_notes, name='post_notes'),
+    path('lecturer_profile/', lecturer_user_profile, name="lecturer_profile"),
+    path('lecturer_profile/create/', lecturer_create_profile, name="lecturer_create_profile"),
 
     # student pages
     path('student/dashboard/', student_dashboard, name='student_dashboard'),

@@ -1,5 +1,6 @@
 from django.contrib.auth import login, authenticate
 from django.contrib import auth
+from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
@@ -95,8 +96,37 @@ def contact_view(request, *args, **kwargs):
     return render(request, "contact.html", {})
 
 
-def profile_view(request, *args, **kwargs):
-    return render(request, "profile.html", {})
+def lecturer_create_profile(request):
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        dob = request.POST['dob']
+        bio = request.POST['bio']
+        contact = request.POST['contact']
+        profile_pic = request.FILES['profile_pic']
+        current_user = request.user
+        user_id = current_user.id
+        print(user_id)
+
+        Profile.objects.filter(id=user_id).create(user_id=user_id, contact=contact, first_name=first_name, email=email,
+                                                  last_name=last_name, bio=bio, dob=dob, profile_pic=profile_pic)
+        messages.success(request, 'Your Profile Was Created Successfully')
+        return redirect('lecturer_profile')
+    else:
+        current_user = request.user
+        user_id = current_user.id
+        users = Profile.objects.filter(user_id=user_id)
+        users = {'users': users}
+        return render(request, 'dashboard/lecturer/create_profile.html', users)
+
+
+def lecturer_user_profile(request):
+    current_user = request.user
+    user_id = current_user.id
+    users = Profile.objects.filter(user_id=user_id)
+    users = {'users': users}
+    return render(request, 'dashboard/lecturer/view_profile.html', users)
 
 
 def student_dashboard(request, *args, **kwargs):
