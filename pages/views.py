@@ -205,7 +205,7 @@ class AddComment(CreateView):
         form.instance.tutorial_id = self.kwargs['pk']
         return super().form_valid(form)
 
-    success_url = reverse_lazy('list_tutorial')
+    success_url = "/lecturer_tutorials/{tutorial_id}"
 
 
 class AddCommentStudent(CreateView):
@@ -218,7 +218,7 @@ class AddCommentStudent(CreateView):
         form.instance.tutorial_id = self.kwargs['pk']
         return super().form_valid(form)
 
-    success_url = reverse_lazy('student_tutorials')
+    success_url = "/student_tutorials/{tutorial_id}"
 
 
 def add_notes(request):
@@ -253,7 +253,6 @@ class AddQuizView(CreateView):
         quiz = form.save(commit=False)
         quiz.owner = self.request.user
         quiz.save()
-        messages.success(self.request, 'Quiz created')
         return redirect('update_quiz', quiz.pk)
 
 

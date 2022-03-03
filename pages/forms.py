@@ -100,7 +100,7 @@ class CommentForm(forms.ModelForm):
 
 class TakeQuizForm(forms.ModelForm):
     ans = forms.ModelChoiceField(
-        queryset = Answer.objects.none(),
+        queryset=Answer.objects.none(),
         widget=forms.RadioSelect(),
         required=True,
         empty_label=None)
