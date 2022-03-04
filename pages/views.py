@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.models import Count, Avg
 from django.forms import inlineformset_factory
 from django.http import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView, DetailView
@@ -553,9 +553,13 @@ def quiz_data_view(request, pk):
     })
 
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
 def save_quiz_view(request, pk):
     # print(request.POST)
-    if request.is_ajax():
+    if is_ajax(request=request):
         questions = []
         data = request.POST
         data_ = dict(data.lists())
