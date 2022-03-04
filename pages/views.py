@@ -249,7 +249,7 @@ def post_tutorial(request):
 
 
 def list_tutorial(request):
-    tutorials = Tutorial.objects.all().order_by('-created_at')
+    tutorials = Tutorial.objects.all().order_by('created_at')
     tutorials = {'tutorials': tutorials}
     return render(request, 'dashboard/lecturer/list_tutorial.html', tutorials)
 
@@ -472,7 +472,7 @@ class ResultsView(DeleteView):
 
 
 def student_tutorials(request):
-    tutorials = Tutorial.objects.all().order_by('-created_at')
+    tutorials = Tutorial.objects.all().order_by('created_at')
     context = {'tutorials': tutorials}
     return render(request, 'dashboard/student/student_tutorials.html', context)
 
