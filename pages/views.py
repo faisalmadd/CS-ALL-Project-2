@@ -582,13 +582,12 @@ def save_quiz_view(request, pk):
             if answer_selected != "":
                 question_answers = Answer.objects.filter(question=q)
                 for answer in question_answers:
-                    if answer_selected == answer.text:
+                    if (answer_selected == answer.text) and answer.is_correct:
+                        score += 1
+                        correct_answer = answer.text
+                    else:
                         if answer.is_correct:
-                            score += 1
                             correct_answer = answer.text
-                        else:
-                            if answer.is_correct:
-                                correct_answer = answer.text
 
                 results.append({str(q): {'correct_answer': correct_answer, 'answered': answer_selected}})
             else:

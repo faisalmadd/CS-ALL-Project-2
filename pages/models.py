@@ -1,7 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.utils.html import escape, mark_safe
-from django.contrib.auth import get_user_model
 from embed_video.fields import EmbedVideoField
 
 
@@ -14,31 +12,11 @@ class User(AbstractUser):
     is_admin = models.BooleanField(default=False)
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to='', default='no-img.jpg', blank=True)
-    first_name = models.CharField(max_length=255, default='')
-    last_name = models.CharField(max_length=255, default='')
-    email = models.EmailField(default='none@email.com')
-    contact = models.CharField(max_length=255, blank=True, null=True)
-    dob = models.DateField(default='24-06-1997')
-    bio = models.TextField(default='')
-
-    def __str__(self):
-        return self.user.username
-
-
 class Course(models.Model):
     name = models.CharField(max_length=30)
 
     def __str__(self):
         return self.name
-
-    def get_html_badge(self):
-        name = escape(self.name)
-        color = escape(self.color)
-        html = '<span class="badge badge-primary" style="background-color: %s">%s</span>' % (color, name)
-        return mark_safe(html)
 
 
 class Tutorial(models.Model):
@@ -82,7 +60,7 @@ class Quiz(models.Model):
         return self.name
 
     def get_questions(self):
-        return self.questions.all()     # limit number_of_questions
+        return self.questions.all()     # related name questions in Question model
 
 
 class Question(models.Model):
@@ -109,13 +87,6 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     quizzes = models.ManyToManyField(Quiz, through='TakenQuiz')
 
-    def get_unanswered_questions(self, quiz):
-        answered_questions = self.quiz_answers \
-            .filter(answer__question__quiz=quiz) \
-            .values_list('answer__question__pk', flat=True)
-        questions = quiz.questions.exclude(pk__in=answered_questions).order_by('text')
-        return questions
-
     def __str__(self):
         return self.user.username
 
@@ -129,3 +100,17 @@ class TakenQuiz(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='taken_quizzes')
     score = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='', default='no-img.jpg', blank=True)
+    first_name = models.CharField(max_length=255, default='')
+    last_name = models.CharField(max_length=255, default='')
+    email = models.EmailField(default='none@email.com')
+    contact = models.CharField(max_length=255, blank=True, null=True)
+    dob = models.DateField(default='24-06-1997')
+    bio = models.TextField(default='')
+
+    def __str__(self):
+        return self.user.username
