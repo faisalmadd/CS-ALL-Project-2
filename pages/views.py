@@ -333,7 +333,7 @@ class UpdateQuizView(UpdateView):
         return self.request.user.quizzes.all()
 
     def get_success_url(self):
-        return reverse('update_quiz', kwargs={'pk', self.object.pk})
+        return reverse('update_quiz', kwargs={'pk': self.object.pk})
 
 
 def add_question(request, pk):
@@ -473,8 +473,8 @@ class ResultsView(DeleteView):
 
 def student_tutorials(request):
     tutorials = Tutorial.objects.all().order_by('-created_at')
-    tutorials = {'tutorials': tutorials}
-    return render(request, 'dashboard/student/student_tutorials.html', tutorials)
+    context = {'tutorials': tutorials}
+    return render(request, 'dashboard/student/student_tutorials.html', context)
 
 
 class StudentTutorialDetail(LoginRequiredMixin, DetailView):
