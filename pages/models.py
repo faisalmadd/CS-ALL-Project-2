@@ -45,11 +45,6 @@ class Notes(models.Model):
     tutorial = models.ForeignKey(Tutorial, related_name='notes', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def delete(self, *args, **kwargs):
-        self.pdf_file.delete()
-        self.ppt_file.delete()
-        super().delete(*args, **kwargs)
-
 
 class Quiz(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quizzes')
