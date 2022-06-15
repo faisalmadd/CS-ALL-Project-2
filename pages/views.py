@@ -18,7 +18,7 @@ from .forms import StudentRegistrationForm, LecturerRegistrationForm, AdminStude
 
 # Create your views here.
 def homepage_view(request, *args, **kwargs):
-    return render(request, "post_announcement.html", {})
+    return render(request, "home.html", {})
 
 
 class StudentRegisterView(CreateView):
