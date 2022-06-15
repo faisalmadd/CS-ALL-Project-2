@@ -18,7 +18,7 @@ from .forms import StudentRegistrationForm, LecturerRegistrationForm, AdminStude
 
 # Create your views here.
 def homepage_view(request, *args, **kwargs):
-    return render(request, "home.html", {})
+    return render(request, "testlogin.html", {})
 
 
 class StudentRegisterView(CreateView):
@@ -145,7 +145,6 @@ def student_create_profile(request):
 
         Profile.objects.filter(id=user_id).create(user_id=user_id, contact=contact, first_name=first_name, email=email,
                                                   last_name=last_name, bio=bio, dob=dob, profile_pic=profile_pic)
-        messages.success(request, 'Your Profile Was Created Successfully')
         return redirect('student_profile')
     else:
         current_user = request.user
@@ -349,7 +348,6 @@ def add_question(request, pk):
             question = form.save(commit=False)
             question.quiz = quiz
             question.save()
-            messages.success(request, 'Please add answers to the questions')
             return redirect('update_questions', quiz.pk, question.pk)
     else:
         form = QuestionForm()
